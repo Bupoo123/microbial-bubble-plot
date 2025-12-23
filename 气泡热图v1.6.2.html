@@ -488,13 +488,16 @@
                     <li>示例数据格式：</li>
                 </ul>
                 <div class="sample-data">
-                    <h4>示例：</h4>
-                    <pre>Microbe,Sample1,Sample2,Sample3,Sample4,Sample5
-A. fumigatus,109754,54654,32645,68440,130512
-A. flavus,42045,41219,32235,31946,48789
-A. terreus,26641,12882,18012,0,0
-A. niger,2407,4168,3212,4300,0
-A. nidulans,0,0,4589,3560,3621</pre>
+                    <h4>示例数据格式：</h4>
+                    <pre>Species,1: 0: 0: 0: 0,0: 1: 0: 0: 0,0: 0: 1: 0: 0,0: 0: 0: 1: 0,0: 0: 0: 0: 1,1: 3: 0: 0: 0,3: 1: 0: 0: 0,1: 0: 0: 3: 0,0: 1: 0: 3: 0,0: 0: 1: 3: 0,1: 0: 0: 0: 3,0: 1: 0: 0: 3,0: 0: 1: 0: 3
+A. fumigatus,109753.74,0,0,0,0,59925.19,82644.69,68440.4,0.19,0.74,132726.97,0,2.28
+A. flavus,1.27,42045.49,0,0,0,41218.61,32235.41,1.14,31946.04,0,0,48788.94,1.68
+A. terreus,0,0,26640.72,0,0,0,0,0,0.19,12882.18,0,0,18011.76
+A. niger,0,0.67,0,2407.22,0,0,0,4167.59,3211.57,4300.01,0,0,0
+A. nidulans,0,0,0,0,4588.63,0,0,0,0,0.74,3559.51,3621.15,6223.52</pre>
+                    <p style="font-size: 0.85rem; color: #6c757d; margin-top: 8px;">
+                        <strong>说明：</strong>第一列为物种名称，后续列为样本名称（可以是任意格式），数值为RPM值。支持小数和0值。
+                    </p>
                 </div>
             </div>
             
@@ -516,7 +519,10 @@ A. nidulans,0,0,4589,3560,3621</pre>
             </div>
             
             <div class="form-group">
-                <button class="btn btn-secondary" id="load-sample-btn">加载示例数据</button>
+                <button class="btn btn-secondary" id="load-sample-btn">加载示例数据（实际格式）</button>
+                <p style="font-size: 0.85rem; color: #6c757d; margin-top: 8px;">
+                    点击此按钮可加载实际数据格式示例，包含13个样本和5种微生物，帮助您了解正确的数据格式。
+                </p>
             </div>
             
             <div id="status-message" class="status-message"></div>
@@ -703,15 +709,13 @@ A. nidulans,0,0,4589,3560,3621</pre>
         const logMinValue = document.getElementById('log-min-value');
         const logMaxValue = document.getElementById('log-max-value');
         
-        // 示例数据 (修改为5个样本，更通用)
-        const sampleData = `Microbe,Sample1,Sample2,Sample3,Sample4,Sample5
-A. fumigatus,109754,54654,32645,68440,130512
-A. flavus,42045,41219,32235,31946,48789
-A. terreus,26641,12882,18012,0,0
-A. niger,2407,4168,3212,4300,0
-A. nidulans,0,0,4589,3560,3621
-Candida albicans,12345,6789,3456,7890,1234
-E. coli,9876,5432,2109,8765,4321`;
+        // 示例数据 (使用实际数据格式)
+        const sampleData = `Species,1: 0: 0: 0: 0,0: 1: 0: 0: 0,0: 0: 1: 0: 0,0: 0: 0: 1: 0,0: 0: 0: 0: 1,1: 3: 0: 0: 0,3: 1: 0: 0: 0,1: 0: 0: 3: 0,0: 1: 0: 3: 0,0: 0: 1: 3: 0,1: 0: 0: 0: 3,0: 1: 0: 0: 3,0: 0: 1: 0: 3
+A. fumigatus,109753.74,0,0,0,0,59925.19,82644.69,68440.4,0.19,0.74,132726.97,0,2.28
+A. flavus,1.27,42045.49,0,0,0,41218.61,32235.41,1.14,31946.04,0,0,48788.94,1.68
+A. terreus,0,0,26640.72,0,0,0,0,0,0.19,12882.18,0,0,18011.76
+A. niger,0,0.67,0,2407.22,0,0,0,4167.59,3211.57,4300.01,0,0,0
+A. nidulans,0,0,0,0,4588.63,0,0,0,0,0.74,3559.51,3621.15,6223.52`;
         
         // 初始化事件监听器
         function initEventListeners() {
