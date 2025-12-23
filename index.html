@@ -37,6 +37,13 @@
             color: #2c3e50;
             margin-bottom: 10px;
             font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s;
+            user-select: none;
+        }
+        
+        .header h1:hover {
+            color: #4dabf7;
         }
         
         .header p {
@@ -457,12 +464,341 @@
         .export-hidden {
             display: none !important;
         }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal.show {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 2% auto;
+            padding: 0;
+            border: none;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            padding: 20px 30px;
+            background-color: #4dabf7;
+            color: white;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: opacity 0.2s;
+        }
+        
+        .close:hover {
+            opacity: 0.7;
+        }
+        
+        .modal-body {
+            padding: 30px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .modal-body h3 {
+            color: #2c3e50;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .modal-body h3:first-child {
+            margin-top: 0;
+        }
+        
+        .modal-body h4 {
+            color: #495057;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .modal-body ul, .modal-body ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .modal-body li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        
+        .modal-body code {
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .modal-body pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border-left: 4px solid #4dabf7;
+        }
+        
+        .modal-body pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        .modal-body blockquote {
+            border-left: 4px solid #4dabf7;
+            padding-left: 15px;
+            margin: 15px 0;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .modal-body a {
+            color: #4dabf7;
+            text-decoration: none;
+        }
+        
+        .modal-body a:hover {
+            text-decoration: underline;
+        }
+        
+        .modal-body strong {
+            color: #2c3e50;
+        }
+        
+        .download-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #4dabf7;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        
+        .download-link:hover {
+            background-color: #339af0;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>微生物丰度气泡图生成器</h1>
+        <h1 id="title-clickable">微生物丰度气泡图生成器</h1>
         <p>专业微生物丰度可视化工具 - 支持任意数量样本，自适应布局</p>
+    </div>
+    
+    <!-- 说明书模态框 -->
+    <div id="manual-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>使用说明书</h2>
+                <span class="close" id="close-modal">&times;</span>
+            </div>
+            <div class="modal-body" id="manual-content">
+                <h3>微生物气泡图生成器</h3>
+                <p>一个专业的微生物丰度可视化工具，支持任意数量样本，自动调整布局，生成美观的气泡热图。</p>
+                
+                <h3>功能特点</h3>
+                <ul>
+                    <li><strong>📊 智能可视化</strong>：自动生成微生物丰度气泡图，气泡大小和颜色表示对数转换后的数值</li>
+                    <li><strong>📁 灵活数据输入</strong>：支持CSV/TSV格式，支持任意数量的样本列</li>
+                    <li><strong>🎨 多种颜色方案</strong>：8种预设颜色方案（蓝色渐变、Viridis、Plasma、Inferno等）</li>
+                    <li><strong>🔢 对数转换</strong>：支持Log₁₀(RPM+1)和Log₂(RPM+1)两种转换方式</li>
+                    <li><strong>📐 自适应布局</strong>：根据样本和微生物数量自动调整图表尺寸和气泡大小</li>
+                    <li><strong>💾 多格式导出</strong>：支持导出PNG图片、PDF文档、处理后的数据CSV和原始数据表格</li>
+                    <li><strong>🖱️ 交互式体验</strong>：鼠标悬停显示详细信息，支持多种显示选项</li>
+                </ul>
+                
+                <h3>快速开始</h3>
+                <h4>在线使用</h4>
+                <ol>
+                    <li>页面会自动加载示例数据并生成图表</li>
+                    <li>点击"加载示例数据（实际格式）"按钮可以重新加载示例数据</li>
+                </ol>
+                
+                <h4>下载示例数据</h4>
+                <p>📥 <strong>下载示例CSV文件</strong>：<a href="data-气泡热图数据.csv" class="download-link" download>data-气泡热图数据.csv</a></p>
+                <p>此文件包含实际的数据格式示例，包含13个样本和5种微生物，可以帮助您了解正确的数据格式。</p>
+                
+                <h3>使用方法</h3>
+                
+                <h4>1. 数据准备</h4>
+                <p>准备CSV或TSV格式的数据文件，格式要求：</p>
+                <ul>
+                    <li><strong>第一列</strong>：微生物/物种名称（文本）</li>
+                    <li><strong>后续列</strong>：样本名称（列名），数值为RPM值</li>
+                    <li>支持任意数量的样本列</li>
+                    <li>支持小数和0值</li>
+                </ul>
+                
+                <p><strong>示例数据格式：</strong></p>
+                <pre><code>Species,1: 0: 0: 0: 0,0: 1: 0: 0: 0,0: 0: 1: 0: 0,0: 0: 0: 1: 0,0: 0: 0: 0: 1,1: 3: 0: 0: 0,3: 1: 0: 0: 0,1: 0: 0: 3: 0,0: 1: 0: 3: 0,0: 0: 1: 3: 0,1: 0: 0: 0: 3,0: 1: 0: 0: 3,0: 0: 1: 0: 3
+A. fumigatus,109753.74,0,0,0,0,59925.19,82644.69,68440.4,0.19,0.74,132726.97,0,2.28
+A. flavus,1.27,42045.49,0,0,0,41218.61,32235.41,1.14,31946.04,0,0,48788.94,1.68
+A. terreus,0,0,26640.72,0,0,0,0,0,0.19,12882.18,0,0,18011.76
+A. niger,0,0.67,0,2407.22,0,0,0,4167.59,3211.57,4300.01,0,0,0
+A. nidulans,0,0,0,0,4588.63,0,0,0,0,0.74,3559.51,3621.15,6223.52</code></pre>
+                
+                <blockquote>
+                    <p>💡 <strong>提示</strong>：您可以下载上面的示例CSV文件作为参考格式。</p>
+                </blockquote>
+                
+                <h4>2. 上传数据</h4>
+                <p>有三种方式加载数据：</p>
+                <ol>
+                    <li><strong>拖放上传</strong>：直接将CSV/TSV文件拖放到上传区域</li>
+                    <li><strong>点击选择</strong>：点击"选择文件"按钮，从文件浏览器中选择文件</li>
+                    <li><strong>示例数据</strong>：点击"加载示例数据（实际格式）"按钮，使用内置示例数据（自动加载）</li>
+                </ol>
+                
+                <h4>3. 设置参数</h4>
+                <h5>对数转换设置</h5>
+                <ul>
+                    <li><strong>Log₁₀(RPM+1) 转换</strong>：适用于一般微生物数据分析（默认）</li>
+                    <li><strong>Log₂(RPM+1) 转换</strong>：适用于基因表达数据分析</li>
+                </ul>
+                
+                <h5>可视化设置</h5>
+                <ul>
+                    <li><strong>颜色方案</strong>：选择8种预设颜色方案之一</li>
+                    <li><strong>气泡大小范围</strong>：调整气泡的最小和最大尺寸（像素）</li>
+                    <li><strong>对数转换值范围</strong>：设置用于颜色和大小映射的数值范围</li>
+                    <li><strong>显示选项</strong>：
+                        <ul>
+                            <li>显示格子边框</li>
+                            <li>在气泡中显示数值</li>
+                            <li>在悬停提示中显示对数值</li>
+                            <li>格式化数值（千位分隔符）</li>
+                            <li>换行长样本名称</li>
+                            <li>自动旋转样本标签</li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <h5>自动调整功能</h5>
+                <ul>
+                    <li><strong>自动调整气泡大小</strong>：根据样本和微生物数量自动调整气泡大小</li>
+                    <li><strong>自动调整数值范围</strong>：根据数据范围自动调整对数转换值范围</li>
+                    <li><strong>全部自动调整</strong>：一键自动调整所有参数</li>
+                </ul>
+                
+                <h4>4. 生成图表</h4>
+                <p>点击"生成热图"按钮，系统将自动生成气泡图。图表会根据数据量自动调整尺寸和布局。</p>
+                
+                <h4>5. 导出结果</h4>
+                <p>支持多种导出格式：</p>
+                <ul>
+                    <li><strong>导出PNG图片</strong>：导出高分辨率PNG格式图片</li>
+                    <li><strong>导出PDF文档</strong>：导出包含图表和图例的PDF文档</li>
+                    <li><strong>导出处理后的数据</strong>：导出对数转换后的数据（CSV格式）</li>
+                    <li><strong>导出数值表格</strong>：导出原始RPM值数据（CSV格式）</li>
+                </ul>
+                
+                <h3>技术说明</h3>
+                <h4>数据转换公式</h4>
+                <ul>
+                    <li><strong>Log₁₀转换</strong>：<code>Log₁₀(RPM + 1)</code></li>
+                    <li><strong>Log₂转换</strong>：<code>Log₂(RPM + 1)</code></li>
+                </ul>
+                
+                <h4>气泡映射规则</h4>
+                <ul>
+                    <li><strong>气泡大小</strong>：根据对数转换值在设定范围内线性映射到气泡半径</li>
+                    <li><strong>气泡颜色</strong>：根据对数转换值在设定范围内映射到颜色方案</li>
+                </ul>
+                
+                <h4>自适应规则</h4>
+                <ul>
+                    <li><strong>气泡大小</strong>：根据样本数量和微生物数量自动调整
+                        <ul>
+                            <li>≤5个样本：5-35像素</li>
+                            <li>6-10个样本：4-30像素</li>
+                            <li>11-20个样本：3-25像素</li>
+                            <li>>20个样本：2-20像素</li>
+                        </ul>
+                    </li>
+                    <li><strong>图表尺寸</strong>：根据样本和微生物数量动态计算，最小800×500像素，最大2000×1500像素</li>
+                </ul>
+                
+                <h3>常见问题</h3>
+                <p><strong>Q: 为什么有些气泡显示为0？</strong><br>
+                A: RPM值为0的数据点不会显示气泡，这是正常现象。</p>
+                
+                <p><strong>Q: 如何调整气泡大小？</strong><br>
+                A: 使用"气泡大小范围"滑块，或点击"自动调整"按钮让系统自动优化。</p>
+                
+                <p><strong>Q: 支持哪些文件格式？</strong><br>
+                A: 支持CSV（逗号分隔）和TSV（制表符分隔）格式。</p>
+                
+                <p><strong>Q: 可以处理多少样本？</strong><br>
+                A: 理论上支持任意数量的样本，系统会自动调整布局以适应数据量。</p>
+                
+                <p><strong>Q: 导出的图片分辨率如何？</strong><br>
+                A: PNG导出使用SVG转换，PDF导出使用2倍分辨率，确保高质量输出。</p>
+                
+                <h3>数据隐私</h3>
+                <p><strong>重要提示</strong>：所有数据处理都在浏览器本地完成，数据不会上传到任何服务器，确保数据安全。</p>
+                
+                <h3>版本信息</h3>
+                <p><strong>当前版本</strong>：v1.6.2<br>
+                <strong>更新日期</strong>：2025年</p>
+            </div>
+        </div>
     </div>
     
     <div class="container">
@@ -1753,10 +2089,43 @@ A. nidulans,0,0,0,0,4588.63,0,0,0,0,0.74,3559.51,3621.15,6223.52`;
             }, 3000);
         }
         
+        // 模态框功能
+        const titleClickable = document.getElementById('title-clickable');
+        const modal = document.getElementById('manual-modal');
+        const closeModal = document.getElementById('close-modal');
+        
+        // 点击标题打开模态框
+        titleClickable.addEventListener('click', () => {
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // 防止背景滚动
+        });
+        
+        // 点击关闭按钮关闭模态框
+        closeModal.addEventListener('click', () => {
+            modal.classList.remove('show');
+            document.body.style.overflow = ''; // 恢复滚动
+        });
+        
+        // 点击模态框外部关闭
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // ESC键关闭模态框
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modal.classList.contains('show')) {
+                modal.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+        
         // 页面加载完成后初始化
         window.addEventListener('DOMContentLoaded', () => {
             initEventListeners();
-            showStatus('欢迎使用微生物气泡图生成器！支持任意数量样本，自动调整布局。', 'info');
+            showStatus('欢迎使用微生物气泡图生成器！支持任意数量样本，自动调整布局。点击标题查看使用说明书。', 'info');
             
             // 自动加载示例数据
             setTimeout(() => {
